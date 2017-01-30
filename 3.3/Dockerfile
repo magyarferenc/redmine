@@ -1,4 +1,4 @@
-FROM felleskatalogen/ruby:2.3.3-slim
+FROM ts2002/ruby:2.3.3-slim
 
 # add our user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
 RUN groupadd -r redmine && useradd -r -g redmine redmine
@@ -42,7 +42,9 @@ RUN apt-get update && apt-get install -y  \
 		build-essential \
 		gcc \
 		patch \
-		\
+		libssl-dev \
+		zlib1g-dev \
+		libpcre3-dev \
 		bzr \
 		git \
 		mercurial \
@@ -62,6 +64,7 @@ RUN wget -O redmine.tar.gz "https://www.redmine.org/releases/redmine-${REDMINE_V
 	&& rm redmine.tar.gz files/delete.me log/delete.me \
 	&& mkdir -p tmp/pdf public/plugin_assets \
 	&& chown -R redmine:redmine ./
+#	&& rm -rf /var/lib/apt/lists/* \
 
 RUN buildDeps=' \
 		gcc \
@@ -72,18 +75,18 @@ RUN buildDeps=' \
 		libsqlite3-dev \
 		make \
 		patch \
+		libssl-dev \
 	' \
 	&& set -ex \
 	&& apt-get update && apt-get install -y $buildDeps --no-install-recommends \
-	&& rm -rf /var/lib/apt/lists/* \
 	&& bundle install --without development test \
 	&& for adapter in mysql2 postgresql sqlite3; do \
 		echo "$RAILS_ENV:" > ./config/database.yml; \
 		echo "  adapter: $adapter" >> ./config/database.yml; \
 		bundle install --without development test; \
 	done \
-	&& rm ./config/database.yml \
-	&& apt-get purge -y --auto-remove $buildDeps
+	&& rm ./config/database.yml
+#	&& apt-get purge -y --auto-remove $buildDeps
 
 
 VOLUME /usr/src/redmine/files
