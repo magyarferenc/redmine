@@ -1,4 +1,4 @@
-FROM ruby:2.2-slim
+FROM felleskatalogen/ruby:2.3.3-slim
 
 # add our user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
 RUN groupadd -r redmine && useradd -r -g redmine redmine
@@ -31,12 +31,17 @@ RUN set -x \
 	&& rm -r "$GNUPGHOME" /usr/local/bin/tini.asc \
 	&& chmod +x /usr/local/bin/tini \
 	&& tini -h
-
-RUN apt-get update && apt-get install -y --no-install-recommends \
+# --no-install-recommends
+RUN apt-get update && apt-get install -y  \
 		imagemagick \
-		libmysqlclient18 \
+		libmysqlclient20 \
 		libpq5 \
 		libsqlite3-0 \
+		nano \
+		mc \
+		build-essential \
+		gcc \
+		patch \
 		\
 		bzr \
 		git \
