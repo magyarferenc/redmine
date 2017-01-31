@@ -8,7 +8,7 @@ RUN buildDeps=' \
 	&& set -x \
 	&& apt-get update && apt-get install -y --no-install-recommends $buildDeps && rm -rf /var/lib/apt/lists/* \
 	&& gem install passenger --version "$PASSENGER_VERSION"
-
+RUN mkdir -p /home/redmine/.passenger/support-binaries/5.1.2
 RUN set -x \
 	&& passenger-config install-agent \
 	&& passenger-config install-standalone-runtime
