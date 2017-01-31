@@ -9,7 +9,7 @@ RUN buildDeps=' \
 	&& apt-get update && apt-get install -y --no-install-recommends $buildDeps && rm -rf /var/lib/apt/lists/* \
 	&& gem install passenger --version "$PASSENGER_VERSION"
 RUN mkdir -p /home/redmine/.passenger/support-binaries && chmod 777 -R /home/redmine/.passenger/support-binaries && chown redmine.redmine -R /home/redmine
-
+RUN apt-get install sendmail -y
 RUN set -x \
 	&& passenger-config install-agent \
 	&& passenger-config install-standalone-runtime
